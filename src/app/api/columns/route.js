@@ -1,18 +1,27 @@
 import { NextResponse } from 'next/server';
-import { addColumnToExcel } from '@/lib/excel';
-import { addColumnMetadata } from '@/lib/metadata';
+import { db } from '@/lib/firebase';
 
 export async function POST(request) {
   try {
-    const { project, columnName, columnType, targetSheet = 'Tasks' } = await request.json();
-    if (!project || !columnName || !columnType) {
-      return NextResponse.json({ error: 'Project, columnName, and columnType required' }, { status: 400 });
+    const { project, columnName } = await request.json();
+    if (!project || !columnName) {
+      return NextResponse.json({ error: 'Project and column name required' }, { status: 400 });
     }
 
-    await addColumnToExcel(project, columnName, targetSheet);
-    await addColumnMetadata(project, columnName, columnType, targetSheet);
+    const metadataRef = db.collection('metadata').doc(project);
+    const doc = await metadataRef.get();
+    
+    let columns = [];
+    if (doc.exists) {
+      columns = doc.data().columns || [];
+    }
+    
+    if (!columns.includes(columnName)) {
+      columns.push(columnName);
+      await metadataRef.set({ columns }, { merge: true });
+    }
 
-    return NextResponse.json({ success: true, columnName, columnType, targetSheet });
+    return NextResponse.json({ success: true, columns });
   } catch (error) {
     console.error('Failed to add column:', error);
     return NextResponse.json({ error: 'Failed to add column' }, { status: 500 });

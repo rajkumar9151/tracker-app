@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getTrackerData } from '@/lib/excel';
-import { getColumnMetadata } from '@/lib/metadata';
+import { db } from '@/lib/firebase';
 
 export async function GET(request) {
   try {
@@ -8,9 +7,29 @@ export async function GET(request) {
     const project = searchParams.get('project');
     if (!project) return NextResponse.json({ error: 'Project required' }, { status: 400 });
     
-    const data = await getTrackerData(project);
-    const metadata = await getColumnMetadata(project);
-    return NextResponse.json({ ...data, metadata });
+    const metadataDoc = await db.collection('metadata').doc(project).get();
+    const customColumns = metadataDoc.exists ? metadataDoc.data().columns || [] : [];
+    
+    const columns = [
+      'Task Name',
+      'Owner',
+      'Status',
+      'Priority',
+      ...customColumns,
+      'Created Date'
+    ];
+
+    const tasksSnapshot = await db.collection('projects').doc(project).collection('tasks').get();
+    const rows = [];
+    tasksSnapshot.forEach(doc => {
+      const data = doc.data();
+      rows.push({
+        id: doc.id,
+        ...data
+      });
+    });
+
+    return NextResponse.json({ rows, columns, metadata: customColumns });
   } catch (error) {
     console.error('Failed to get tracker data:', error);
     return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 });

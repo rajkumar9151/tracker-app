@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  serverExternalPackages: ['exceljs'],
+  serverExternalPackages: ['firebase-admin'],
 };
 
 export default nextConfig;
