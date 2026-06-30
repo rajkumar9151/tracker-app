@@ -2,7 +2,8 @@ import fs from 'fs';
 import path from 'path';
 
 function getMetaPath(projectName) {
-  return path.join(process.cwd(), `${projectName}_metadata.json`);
+  const dataDir = process.env.DATA_DIR || process.cwd();
+  return path.join(dataDir, `${projectName}_metadata.json`);
 }
 
 export async function getColumnMetadata(projectName) {

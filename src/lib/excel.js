@@ -4,11 +4,13 @@ import path from 'path';
 
 // Helper to get file path
 function getFilePath(projectName) {
-  return path.join(process.cwd(), `${projectName}_tracker.xlsx`);
+  const dataDir = process.env.DATA_DIR || process.cwd();
+  return path.join(dataDir, `${projectName}_tracker.xlsx`);
 }
 
 export async function getProjects() {
-  const files = fs.readdirSync(process.cwd());
+  const dataDir = process.env.DATA_DIR || process.cwd();
+  const files = fs.readdirSync(dataDir);
   const projects = files
     .filter(file => file.endsWith('_tracker.xlsx') && !file.startsWith('~$'))
     .map(file => file.replace('_tracker.xlsx', ''));
@@ -260,7 +262,8 @@ export async function deleteTask(projectName, taskId) {
 }
 
 export async function getProjectsWithStats() {
-  const files = fs.readdirSync(process.cwd());
+  const dataDir = process.env.DATA_DIR || process.cwd();
+  const files = fs.readdirSync(dataDir);
   const projectNames = files
     .filter(file => file.endsWith('_tracker.xlsx') && !file.startsWith('~$'))
     .map(file => file.replace('_tracker.xlsx', ''));
