@@ -31,7 +31,7 @@ export default function Home() {
 
   const fetchProjects = async () => {
     try {
-      const res = await fetch('/api/projects');
+      const res = await fetch(`/api/projects?t=${Date.now()}`);
       const result = await res.json();
       setProjects(result.projects || []);
       // We don't auto-select a project anymore so the Dashboard is shown
@@ -55,7 +55,7 @@ export default function Home() {
   const fetchData = async (projectName) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/data?project=${encodeURIComponent(projectName)}`);
+      const res = await fetch(`/api/data?project=${encodeURIComponent(projectName)}&t=${Date.now()}`);
       if (res.ok) {
         const result = await res.json();
         setData(result);
@@ -96,9 +96,13 @@ export default function Home() {
         setShowProjectModal(false);
         await fetchProjects();
         setActiveProject(projectName);
+      } else {
+        const err = await res.json();
+        alert(err.error || 'Failed to create project');
       }
     } catch (error) {
       console.error('Error creating project:', error);
+      alert('An unexpected error occurred while creating the project.');
     }
   };
 
