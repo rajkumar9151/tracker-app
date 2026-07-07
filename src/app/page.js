@@ -16,7 +16,7 @@ import AddProjectUpdateModal from '@/components/AddProjectUpdateModal';
 import EditProjectUpdateModal from '@/components/EditProjectUpdateModal';
 import ProjectUpdatesSection from '@/components/ProjectUpdatesSection';
 import { AnimatePresence } from 'framer-motion';
-import { FolderPlus, Plus, Trash2, FileText, LogOut } from 'lucide-react';
+import { FolderPlus, Plus, Trash2, FileText, LogOut, Calendar, Clock } from 'lucide-react';
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -28,6 +28,51 @@ export default function Home() {
       setIsLoggedIn(true);
     }
   }, []);
+
+  const [currentDateTime, setCurrentDateTime] = useState(null);
+
+  // Update clock every minute
+  useEffect(() => {
+    setCurrentDateTime(new Date());
+    const interval = setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Idle timeout logout (1 hour)
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    let timeoutId;
+    const idleLimit = 60 * 60 * 1000; // 1 hour in ms
+
+    const logoutUser = () => {
+      localStorage.removeItem('tracker_auth');
+      setIsLoggedIn(false);
+      alert('You have been logged out due to inactivity.');
+    };
+
+    const resetTimer = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(logoutUser, idleLimit);
+    };
+
+    const activityEvents = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
+    
+    activityEvents.forEach(event => {
+      window.addEventListener(event, resetTimer);
+    });
+
+    resetTimer();
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      activityEvents.forEach(event => {
+        window.removeEventListener(event, resetTimer);
+      });
+    };
+  }, [isLoggedIn]);
 
   const [projects, setProjects] = useState([]);
   const [dueTasks, setDueTasks] = useState([]);
@@ -480,14 +525,24 @@ export default function Home() {
               />
             </div>
           </div>
-          <div className="flex flex-1 justify-center items-center gap-3 px-6 text-label-md font-label-md text-text-muted select-none">
-            <span className="tracking-wide">{format(new Date(), 'dd.MM.yyyy')}</span>
-            <span 
-              className="px-2 py-0.5 rounded text-primary font-bold bg-primary/5 shadow-[0_0_12px_rgba(59,130,246,0.3)] border border-primary/20"
-              style={{ textShadow: '0 0 8px rgba(59,130,246,0.4)' }}
-            >
-              WK{getISOWeek(new Date())}
-            </span>
+          <div className="flex flex-1 justify-center items-center px-6">
+            {currentDateTime && (
+              <div className="hidden md:flex items-center gap-3 px-4 py-1.5 bg-white border border-slate-200 rounded-full shadow-sm text-sm font-medium text-slate-600 select-none">
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                  {currentDateTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                </span>
+                <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                <span className="flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-slate-400" />
+                  {currentDateTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
+                </span>
+                <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-xs font-bold tracking-wide">
+                  WK {getISOWeek(currentDateTime)}
+                </span>
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-4">
             {activeProject && (
