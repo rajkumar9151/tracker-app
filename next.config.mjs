@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  serverExternalPackages: ['firebase-admin'],
+  allowedDevOrigins: ['192.168.1.236'],
 };
 
 export default nextConfig;

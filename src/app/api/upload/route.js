@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
+import { getDb, saveDb } from '@/lib/localdb';
 
 export async function POST(request) {
   try {
@@ -23,18 +23,22 @@ export async function POST(request) {
       uploadedAt: new Date().toISOString()
     };
 
-    const taskRef = db.collection('projects').doc(project).collection('tasks').doc(taskId);
-    const doc = await taskRef.get();
-    
-    if (!doc.exists) {
+    const db = await getDb();
+    if (!db.tasks || !db.tasks[project]) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
     }
 
-    const task = doc.data();
-    const attachments = task.attachments || [];
-    attachments.push(attachment);
+    const taskIndex = db.tasks[project].findIndex(t => t.id === taskId || t.ID === taskId);
+    if (taskIndex === -1) {
+      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+    }
 
-    await taskRef.update({ attachments });
+    const task = db.tasks[project][taskIndex];
+    if (!task.attachments) task.attachments = [];
+    
+    task.attachments.push(attachment);
+
+    await saveDb(db);
 
     return NextResponse.json({ success: true, attachment: { name: file.name, type: file.type, size: file.size } });
   } catch (error) {

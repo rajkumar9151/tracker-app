@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
+import { getDb, saveDb } from '@/lib/localdb';
 
 export async function POST(request) {
   try {
@@ -8,9 +8,19 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Project and taskId required' }, { status: 400 });
     }
 
-    await db.collection('projects').doc(project).collection('tasks').doc(taskId).update({
-      Status: 'Closed'
-    });
+    const db = await getDb();
+    if (!db.tasks || !db.tasks[project]) {
+      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+    }
+
+    const taskIndex = db.tasks[project].findIndex(t => t.id === taskId || t.ID === taskId);
+    if (taskIndex === -1) {
+      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+    }
+
+    db.tasks[project][taskIndex].Status = 'Closed';
+    
+    await saveDb(db);
 
     return NextResponse.json({ success: true });
   } catch (error) {

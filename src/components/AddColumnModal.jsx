@@ -6,11 +6,12 @@ export default function AddColumnModal({ onClose, onSave }) {
   const [columnName, setColumnName] = useState('');
   const [columnType, setColumnType] = useState('text');
   const [targetSheet, setTargetSheet] = useState('Tasks');
+  const [options, setOptions] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (columnName.trim()) {
-      onSave(columnName.trim(), columnType, targetSheet);
+      onSave(columnName.trim(), columnType, targetSheet, options.trim());
     }
   };
 
@@ -50,10 +51,30 @@ export default function AddColumnModal({ onClose, onSave }) {
               className="form-select"
             >
               <option value="text">Text (Default)</option>
+              <option value="dropdown">Dropdown (Select)</option>
               <option value="date">Date</option>
               <option value="attachment">Image / Attachment</option>
             </select>
           </div>
+
+          {columnType === 'dropdown' && (
+            <motion.div 
+              className="form-group"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+            >
+              <label className="form-label">Dropdown Options</label>
+              <input 
+                required 
+                type="text" 
+                value={options} 
+                onChange={(e) => setOptions(e.target.value)} 
+                className="form-input" 
+                placeholder="e.g., Value 1, Value 2, Value 3" 
+              />
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Separate options with commas.</span>
+            </motion.div>
+          )}
 
           <div className="form-group">
             <label className="form-label">Apply To</label>

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
+import { getDb } from '@/lib/localdb';
 import { parseISO, isPast, isToday, startOfDay } from 'date-fns';
 
 export async function GET(request) {
@@ -8,14 +8,12 @@ export async function GET(request) {
     const project = searchParams.get('project');
     if (!project) return NextResponse.json({ error: 'Project required' }, { status: 400 });
     
-    const tasksSnapshot = await db.collection('projects').doc(project).collection('tasks').get();
+    const db = await getDb();
+    const tasks = (db.tasks && db.tasks[project]) || [];
     
     let dueTasksCount = 0;
-    const now = new Date();
-    const today = startOfDay(now);
-
-    tasksSnapshot.forEach(doc => {
-      const task = doc.data();
+    
+    tasks.forEach(task => {
       if (task.Status !== 'Closed' && task['Due Date']) {
         try {
           const dueDate = parseISO(task['Due Date']);

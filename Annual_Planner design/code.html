@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Annual Wheel | Aethelgard Planner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#e0e3e5",
+                        "tertiary-fixed": "#ffdbcd",
+                        "info": "#3B82F6",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e0e3e5",
+                        "text-main": "#1E293B",
+                        "on-secondary-fixed": "#0b1c30",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-secondary-container": "#54647a",
+                        "background": "#f7f9fb",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "border-subtle": "#E2E8F0",
+                        "surface": "#f7f9fb",
+                        "on-tertiary-container": "#ffede6",
+                        "on-primary-fixed": "#00174b",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "inverse-primary": "#b4c5ff",
+                        "surface-container": "#eceef0",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary-fixed": "#d3e4fe",
+                        "primary": "#004ac6",
+                        "on-primary-container": "#eeefff",
+                        "on-surface-variant": "#434655",
+                        "primary-container": "#2563eb",
+                        "surface-container-high": "#e6e8ea",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "outline-variant": "#c3c6d7",
+                        "surface-tint": "#0053db",
+                        "on-background": "#191c1e",
+                        "warning": "#F59E0B",
+                        "on-secondary": "#ffffff",
+                        "danger": "#EF4444",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#d8dadc",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "secondary": "#505f76",
+                        "outline": "#737686",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "success": "#10B981",
+                        "secondary-container": "#d0e1fb",
+                        "inverse-surface": "#2d3133",
+                        "tertiary-container": "#bc4800",
+                        "on-surface": "#191c1e",
+                        "text-muted": "#64748B",
+                        "tertiary": "#943700",
+                        "inverse-on-surface": "#eff1f3"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "gutter": "1.5rem",
+                        "stack-md": "1rem",
+                        "stack-lg": "2rem",
+                        "stack-sm": "0.5rem",
+                        "margin-mobile": "1rem",
+                        "margin-desktop": "2rem"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; overflow-x: hidden; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        
+        /* Glassmorphism Classes */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+        
+        .glass-sidebar {
+            background: rgba(247, 249, 251, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Interactive Wheel Effects */
+        .wheel-segment {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-origin: 200px 200px;
+            cursor: pointer;
+            fill: rgba(0, 0, 0, 0.03);
+            stroke: rgba(0, 0, 0, 0.05);
+            stroke-width: 1px;
+        }
+        .wheel-segment:hover {
+            transform: scale(1.03);
+            fill: rgba(37, 99, 235, 0.08);
+            filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.2));
+        }
+        .wheel-active {
+            fill: rgba(37, 99, 235, 0.15);
+            stroke: #2563eb;
+            stroke-width: 2.5px;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes rotate-in {
+            from { transform: rotate(-20deg) scale(0.9); opacity: 0; }
+            to { transform: rotate(0) scale(1); opacity: 1; }
+        }
+        .animate-rotate-in {
+            animation: rotate-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes stagger-in {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stagger-item {
+            opacity: 0;
+            animation: stagger-in 0.6s ease-out forwards;
+        }
+
+        /* Canvas Shader Background */
+        #shader-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .radar-line { stroke: rgba(0,0,0,0.05); stroke-width: 1px; }
+        .bento-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; }
+    </style>
+</head>
+<body class="text-text-main">
+<!-- Shader Background Canvas -->
+<canvas id="shader-bg"></canvas>
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 glass-sidebar py-stack-lg z-50">
+<div class="px-6 mb-8">
+<h1 class="font-headline-sm text-headline-sm font-semibold text-text-main">Yearly Planner</h1>
+<p class="font-label-md text-label-md text-secondary opacity-70">2024 Strategy</p>
+</div>
+<nav class="flex-grow px-3 space-y-1">
+<a class="flex items-center px-3 py-2 text-primary font-bold bg-primary/10 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined mr-3">radar</span>
+<span class="font-label-md text-label-md">Annual Wheel</span>
+</a>
+<a class="flex items-center px-3 py-2 text-secondary hover:bg-white/40 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined mr-3">calendar_month</span>
+<span class="font-label-md text-label-md">Monthly View</span>
+</a>
+<a class="flex items-center px-3 py-2 text-secondary hover:bg-white/40 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined mr-3">list_alt</span>
+<span class="font-label-md text-label-md">Activity Log</span>
+</a>
+<a class="flex items-center px-3 py-2 text-secondary hover:bg-white/40 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined mr-3">insights</span>
+<span class="font-label-md text-label-md">Statistics</span>
+</a>
+<a class="flex items-center px-3 py-2 text-secondary hover:bg-white/40 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined mr-3">history</span>
+<span class="font-label-md text-label-md">Archived</span>
+</a>
+</nav>
+<div class="px-3 mt-auto space-y-1">
+<button class="w-full mb-4 py-2 bg-primary text-white rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:opacity-90 shadow-lg shadow-primary/20 transition-all">
+<span class="material-symbols-outlined text-sm">add</span> Add New Goal
+            </button>
+<a class="flex items-center px-3 py-2 text-secondary hover:bg-white/40 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined mr-3">help_outline</span>
+<span class="font-label-md text-label-md">Help</span>
+</a>
+<a class="flex items-center px-3 py-2 text-secondary hover:bg-white/40 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined mr-3">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
+</a>
+</div>
+</aside>
+<div class="md:ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center px-gutter w-full h-16 sticky top-0 z-40 glass-nav">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-primary">Aethelgard Planner</span>
+</div>
+<div class="flex-grow max-w-md mx-8 hidden sm:block">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-white/40 border border-white/30 rounded-full font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Search strategy..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-secondary hover:bg-white/50 rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2.5 right-2.5 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<button class="p-2 text-secondary hover:bg-white/50 rounded-full transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden border border-white/50 cursor-pointer hover:scale-105 transition-transform">
+<img alt="Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZHe7nNB2czFfo2K6aoRsEtkx16xaCBGSjUR6wZaGMPmx4l7nd0o8dsTle364kaZWj5ru85DsIrSDZUrxbARmb4McaVNw11UEYk9isDuqhhV8HLGudLl9fWjl08mLd5H9lQw8XCdLFvFC72mvlePqJ9hdFvIlf9p2vABdBxLgV1B5nteAEaUxv7WwdHx3FPrVBaMvYL-FL7j5HP-rbmKMRLf3zdY0lPugraK18CrbXPldn5cH4tL_vGVyJw_P-Cshb96H5jHWsAmw"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="p-8">
+<div class="max-w-[1400px] mx-auto">
+<header class="mb-8 stagger-item" style="animation-delay: 0.1s;">
+<h2 class="font-display-lg text-display-lg text-text-main">Annual Wheel 2024</h2>
+<p class="font-body-lg text-body-lg text-text-muted mt-2">Visualizing strategic progress across the fiscal year cycle.</p>
+</header>
+<!-- Bento Layout -->
+<div class="bento-grid">
+<!-- Main Wheel Section -->
+<section class="col-span-12 lg:col-span-8 glass-card rounded-xl p-8 flex flex-col items-center justify-center relative overflow-hidden stagger-item" style="animation-delay: 0.2s;">
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-24 -left-24 w-64 h-64 bg-secondary-container/10 rounded-full blur-3xl"></div>
+<div class="relative w-full aspect-square max-w-[550px] animate-float animate-rotate-in">
+<svg class="w-full h-full drop-shadow-2xl" viewbox="0 0 400 400">
+<!-- Concentric Rings -->
+<circle class="radar-line" cx="200" cy="200" fill="none" r="180"></circle>
+<circle class="radar-line" cx="200" cy="200" fill="none" r="130"></circle>
+<circle class="radar-line" cx="200" cy="200" fill="none" r="80" stroke-dasharray="4 4"></circle>
+<!-- Segments -->
+<g id="wheel-segments">
+<path class="wheel-segment" d="M200,200 L200,20 A180,180 0 0,1 290,53.5 Z" data-month="Jan"></path>
+<path class="wheel-segment" d="M200,200 L290,53.5 A180,180 0 0,1 346.5,110 Z" data-month="Feb"></path>
+<path class="wheel-segment" d="M200,200 L346.5,110 A180,180 0 0,1 380,200 Z" data-month="Mar"></path>
+<path class="wheel-segment" d="M200,200 L380,200 A180,180 0 0,1 346.5,290 Z" data-month="Apr"></path>
+<path class="wheel-segment" d="M200,200 L346.5,290 A180,180 0 0,1 290,346.5 Z" data-month="May"></path>
+<path class="wheel-segment" d="M200,200 L290,346.5 A180,180 0 0,1 200,380 Z" data-month="Jun"></path>
+<path class="wheel-segment" d="M200,200 L200,380 A180,180 0 0,1 110,346.5 Z" data-month="Jul"></path>
+<path class="wheel-segment" d="M200,200 L110,346.5 A180,180 0 0,1 53.5,290 Z" data-month="Aug"></path>
+<path class="wheel-segment" d="M200,200 L53.5,290 A180,180 0 0,1 20,200 Z" data-month="Sep"></path>
+<path class="wheel-segment wheel-active" d="M200,200 L20,200 A180,180 0 0,1 53.5,110 Z" data-month="Oct"></path>
+<path class="wheel-segment" d="M200,200 L53.5,110 A180,180 0 0,1 110,53.5 Z" data-month="Nov"></path>
+<path class="wheel-segment" d="M200,200 L110,53.5 A180,180 0 0,1 200,20 Z" data-month="Dec"></path>
+</g>
+<!-- Month Labels -->
+<g class="font-label-sm text-label-sm fill-text-muted select-none pointer-events-none">
+<text text-anchor="middle" x="200" y="45">JAN</text>
+<text text-anchor="middle" x="275" y="65">FEB</text>
+<text text-anchor="middle" x="330" y="125">MAR</text>
+<text text-anchor="middle" x="350" y="205">APR</text>
+<text text-anchor="middle" x="330" y="285">MAY</text>
+<text text-anchor="middle" x="275" y="345">JUN</text>
+<text text-anchor="middle" x="200" y="365">JUL</text>
+<text text-anchor="middle" x="125" y="345">AUG</text>
+<text text-anchor="middle" x="70" y="285">SEP</text>
+<text text-anchor="middle" x="50" y="205">OCT</text>
+<text text-anchor="middle" x="70" y="125">NOV</text>
+<text text-anchor="middle" x="125" y="65">DEC</text>
+</g>
+<!-- Activity Dots (Visual only for October context) -->
+<circle class="fill-primary" cx="120" cy="180" r="4"></circle>
+<circle class="fill-success" cx="100" cy="220" r="4"></circle>
+<circle class="fill-warning" cx="80" cy="195" r="4"></circle>
+</svg>
+<!-- Center Label -->
+<div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+<span class="font-label-sm text-label-sm text-text-muted uppercase tracking-widest opacity-60">Selected</span>
+<span class="font-headline-md text-headline-md font-bold text-primary transition-all duration-300" id="active-month-display">OCT</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="mt-12 flex gap-6 stagger-item" style="animation-delay: 0.3s;">
+<div class="flex items-center gap-2 group cursor-help">
+<span class="w-3 h-3 rounded-full bg-primary ring-2 ring-primary/20"></span>
+<span class="font-label-md text-label-md text-text-muted group-hover:text-text-main transition-colors">Marketing</span>
+</div>
+<div class="flex items-center gap-2 group cursor-help">
+<span class="w-3 h-3 rounded-full bg-success ring-2 ring-success/20"></span>
+<span class="font-label-md text-label-md text-text-muted group-hover:text-text-main transition-colors">Operations</span>
+</div>
+<div class="flex items-center gap-2 group cursor-help">
+<span class="w-3 h-3 rounded-full bg-warning ring-2 ring-warning/20"></span>
+<span class="font-label-md text-label-md text-text-muted group-hover:text-text-main transition-colors">Product</span>
+</div>
+<div class="flex items-center gap-2 group cursor-help">
+<span class="w-3 h-3 rounded-full bg-info ring-2 ring-info/20"></span>
+<span class="font-label-md text-label-md text-text-muted group-hover:text-text-main transition-colors">Research</span>
+</div>
+</div>
+</section>
+<!-- Sidebar Stats & Log -->
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<!-- Statistics Card -->
+<div class="glass-card rounded-xl p-6 stagger-item" style="animation-delay: 0.4s;">
+<div class="flex items-center justify-between mb-4 border-b border-black/5 pb-3">
+<h3 class="font-label-md text-label-md font-semibold text-text-main">Yearly Statistics</h3>
+<span class="material-symbols-outlined text-secondary text-lg">insights</span>
+</div>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between mb-1">
+<span class="font-label-sm text-label-sm text-text-muted">Overall Progress</span>
+<span class="font-label-sm text-label-sm font-bold text-primary">68%</span>
+</div>
+<div class="w-full bg-black/5 h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full transition-all duration-1000" style="width: 68%"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 pt-2">
+<div class="p-3 bg-white/40 rounded-lg border border-white/50">
+<p class="font-label-sm text-label-sm text-text-muted">Total Tasks</p>
+<p class="font-headline-sm text-headline-sm font-bold">142</p>
+</div>
+<div class="p-3 bg-white/40 rounded-lg border border-white/50">
+<p class="font-label-sm text-label-sm text-text-muted">Milestones</p>
+<p class="font-headline-sm text-headline-sm font-bold text-success">12</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Activity Log Card -->
+<div class="glass-card rounded-xl flex flex-col h-full max-h-[550px] stagger-item" style="animation-delay: 0.5s;">
+<div class="p-6 border-b border-black/5">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="font-label-md text-label-md font-semibold text-text-main" id="log-month-title">October Activity Log</h3>
+<p class="font-label-sm text-label-sm text-text-muted" id="log-month-summary">7 active tasks this month</p>
+</div>
+<button class="p-2 hover:bg-white/50 rounded-full transition-all">
+<span class="material-symbols-outlined text-secondary">filter_list</span>
+</button>
+</div>
+</div>
+<div class="overflow-y-auto p-2 space-y-1" id="activity-log-container">
+<!-- Log Items (Dynamically filled) -->
+<div class="group flex items-start gap-4 p-4 hover:bg-white/40 rounded-lg transition-all cursor-pointer">
+<div class="mt-1 w-2 h-2 rounded-full bg-primary flex-shrink-0 shadow-[0_0_8px_rgba(37,99,235,0.4)]"></div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-label-md text-label-md font-semibold">Q4 Strategy Kickoff</h4>
+<span class="font-label-sm text-label-sm text-text-muted">Oct 12</span>
+</div>
+<p class="font-body-md text-body-md text-text-muted mt-1">Reviewing quarterly targets with the executive board.</p>
+<div class="mt-2 flex items-center gap-2">
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase">Priority</span>
+<span class="text-text-muted text-[10px]">#Strategic</span>
+</div>
+</div>
+</div>
+<div class="group flex items-start gap-4 p-4 hover:bg-white/40 rounded-lg transition-all cursor-pointer border-t border-black/5">
+<div class="mt-1 w-2 h-2 rounded-full bg-success flex-shrink-0 shadow-[0_0_8px_rgba(16,185,129,0.4)]"></div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-label-md text-label-md font-semibold">Annual Security Audit</h4>
+<span class="font-label-sm text-label-sm text-text-muted">Oct 18</span>
+</div>
+<p class="font-body-md text-body-md text-text-muted mt-1">External infrastructure compliance check.</p>
+<div class="mt-2 flex items-center gap-2">
+<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] font-bold rounded uppercase">In Progress</span>
+</div>
+</div>
+</div>
+<div class="group flex items-start gap-4 p-4 hover:bg-white/40 rounded-lg transition-all cursor-pointer border-t border-black/5">
+<div class="mt-1 w-2 h-2 rounded-full bg-warning flex-shrink-0 shadow-[0_0_8px_rgba(245,158,11,0.4)]"></div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-label-md text-label-md font-semibold">User Group Workshop</h4>
+<span class="font-label-sm text-label-sm text-text-muted">Oct 24</span>
+</div>
+<p class="font-body-md text-body-md text-text-muted mt-1">Gathering feedback for upcoming UI updates.</p>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-black/5 bg-white/20">
+<button class="w-full text-center font-label-md text-label-md text-primary font-semibold hover:underline">View All Oct Events</button>
+</div>
+</div>
+</div>
+<!-- Bottom Strategy Milestones Row -->
+<section class="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="glass-card rounded-xl p-6 flex gap-4 items-center group cursor-pointer hover:border-primary/40 transition-all stagger-item" style="animation-delay: 0.6s;">
+<div class="w-12 h-12 rounded-lg bg-info/10 flex items-center justify-center text-info group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">flag</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-text-muted">Next Major Milestone</p>
+<h4 class="font-label-md text-label-md font-bold">Project Aethelgard Launch</h4>
+<p class="text-[12px] text-text-muted">In 42 days (Dec 15)</p>
+</div>
+</div>
+<div class="glass-card rounded-xl p-6 flex gap-4 items-center group cursor-pointer hover:border-primary/40 transition-all stagger-item" style="animation-delay: 0.7s;">
+<div class="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center text-warning group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">pending_actions</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-text-muted">Pending Approvals</p>
+<h4 class="font-label-md text-label-md font-bold">3 Budget Proposals</h4>
+<p class="text-[12px] text-text-muted">Awaiting review from Finance</p>
+</div>
+</div>
+<div class="glass-card rounded-xl p-6 flex gap-4 items-center group cursor-pointer hover:border-primary/40 transition-all stagger-item" style="animation-delay: 0.8s;">
+<div class="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center text-success group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-text-muted">Last Completed</p>
+<h4 class="font-label-md text-label-md font-bold">Server Migration</h4>
+<p class="text-[12px] text-text-muted">Finished 3 days ago</p>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+</div>
+<!-- Shader Script -->
+<script>
+        const canvas = document.getElementById('shader-bg');
+        const gl = canvas.getContext('webgl');
+
+        const vertexSource = `
+            attribute vec2 position;
+            varying vec2 v_texCoord;
+            void main() {
+                v_texCoord = position * 0.5 + 0.5;
+                v_texCoord.y = 1.0 - v_texCoord.y;
+                gl_Position = vec4(position, 0.0, 1.0);
+            }
+        `;
+
+        const fragmentSource = `
+            precision highp float;
+            varying vec2 v_texCoord;
+            uniform float u_time;
+            uniform vec2 u_resolution;
+
+            vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+            float snoise(vec2 v){
+              const vec4 C = vec4(0.211324865405187, 0.366025403784439,
+                       -0.577350269189626, 0.024390243902439);
+              vec2 i  = floor(v + dot(v, C.yy) );
+              vec2 x0 = v -   i + dot(i, C.xx);
+              vec2 i1;
+              i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+              vec4 x12 = x0.xyxy + C.xxzz;
+              x12.xy -= i1;
+              i = mod(i, 289.0);
+              vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
+              + i.x + vec3(0.0, i1.x, 1.0 ));
+              vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),
+                dot(x12.zw,x12.zw)), 0.0);
+              m = m*m ;
+              m = m*m ;
+              vec3 x = 2.0 * fract(p * C.wwww) - 1.0;
+              vec3 h = abs(x) - 0.5;
+              vec3 a0 = x - floor(x + 0.5);
+              m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+              vec3 g;
+              g.x  = a0.x  * x0.x  + h.x  * x0.y;
+              g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+              return 130.0 * dot(m, g);
+            }
+
+            void main() {
+                vec2 uv = v_texCoord;
+                vec3 color1 = vec3(0.145, 0.388, 0.922); 
+                vec3 color2 = vec3(0.969, 0.976, 0.984); 
+                
+                float noise = snoise(uv * 2.0 + u_time * 0.1);
+                float noise2 = snoise(uv * 4.0 - u_time * 0.05);
+                
+                float mixFactor = smoothstep(-0.5, 0.5, noise + noise2 * 0.5);
+                vec3 finalColor = mix(color2, color1 * 0.05 + color2 * 0.95, mixFactor);
+                
+                float dist = distance(uv, vec2(0.5));
+                finalColor *= smoothstep(0.8, 0.2, dist * 0.5);
+                
+                gl_FragColor = vec4(finalColor, 1.0);
+            }
+        `;
+
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            return shader;
+        }
+
+        const program = gl.createProgram();
+        gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, vertexSource));
+        gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, fragmentSource));
+        gl.linkProgram(program);
+        gl.useProgram(program);
+
+        const buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+
+        const position = gl.getAttribLocation(program, 'position');
+        gl.enableVertexAttribArray(position);
+        gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+
+        const uTime = gl.getUniformLocation(program, 'u_time');
+        const uRes = gl.getUniformLocation(program, 'u_resolution');
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            gl.uniform2f(uRes, canvas.width, canvas.height);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        function render(time) {
+            gl.uniform1f(uTime, time * 0.001);
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            requestAnimationFrame(render);
+        }
+        requestAnimationFrame(render);
+    </script>
+<!-- Interactive Logic Script -->
+<script>
+        const monthData = {
+            'Jan': { summary: '4 active tasks this month', events: [ {title: 'Budget Allocation', date: 'Jan 5', desc: 'Fiscal year setup and department budgeting.', status: 'COMPLETED', color: 'bg-primary'}] },
+            'Feb': { summary: '5 active tasks this month', events: [ {title: 'Product Roadmap Review', date: 'Feb 14', desc: 'Alignment on Q1 product milestones.', status: 'COMPLETED', color: 'bg-warning'}] },
+            'Mar': { summary: '3 active tasks this month', events: [ {title: 'Q1 Review', date: 'Mar 31', desc: 'Quarterly board presentation and performance audit.', status: 'PRIORITY', color: 'bg-primary'}] },
+            'Apr': { summary: '6 active tasks this month', events: [ {title: 'Marketing Campaign Launch', date: 'Apr 10', desc: 'Spring brand awareness push.', status: 'IN PROGRESS', color: 'bg-primary'}] },
+            'May': { summary: '2 active tasks this month', events: [ {title: 'Internal Hackathon', date: 'May 22', desc: 'Innovation week for internal tools.', status: 'COMPLETED', color: 'bg-info'}] },
+            'Jun': { summary: '8 active tasks this month', events: [ {title: 'Mid-Year Sync', date: 'Jun 15', desc: 'Whole-company strategy update meeting.', status: 'PRIORITY', color: 'bg-primary'}] },
+            'Jul': { summary: '4 active tasks this month', events: [ {title: 'Infrastructure Maintenance', date: 'Jul 8', desc: 'Database optimization and server patches.', status: 'COMPLETED', color: 'bg-success'}] },
+            'Aug': { summary: '3 active tasks this month', events: [ {title: 'User Research Phase 2', date: 'Aug 19', desc: 'Direct client interviews for UX feedback.', status: 'IN PROGRESS', color: 'bg-info'}] },
+            'Sep': { summary: '5 active tasks this month', events: [ {title: 'Sales Strategy Kickoff', date: 'Sep 3', desc: 'Planning for the final fiscal push.', status: 'COMPLETED', color: 'bg-primary'}] },
+            'Oct': { 
+                summary: '7 active tasks this month', 
+                events: [
+                    {title: 'Q4 Strategy Kickoff', date: 'Oct 12', desc: 'Reviewing quarterly targets with the executive board.', status: 'PRIORITY', color: 'bg-primary'},
+                    {title: 'Annual Security Audit', date: 'Oct 18', desc: 'External infrastructure compliance check.', status: 'IN PROGRESS', color: 'bg-success'},
+                    {title: 'User Group Workshop', date: 'Oct 24', desc: 'Gathering feedback for upcoming UI updates.', status: '', color: 'bg-warning'}
+                ] 
+            },
+            'Nov': { summary: '9 active tasks this month', events: [ {title: 'App Store Refresh', date: 'Nov 12', desc: 'Visual update for mobile app stores.', status: 'IN PROGRESS', color: 'bg-primary'}] },
+            'Dec': { summary: '12 active tasks this month', events: [ {title: 'Project Aethelgard Launch', date: 'Dec 15', desc: 'The major milestone of the year.', status: 'PRIORITY', color: 'bg-info'}] }
+        };
+
+        function updateLog(month) {
+            const data = monthData[month] || monthData['Oct'];
+            const container = document.getElementById('activity-log-container');
+            const title = document.getElementById('log-month-title');
+            const summary = document.getElementById('log-month-summary');
+            const displayMonth = document.getElementById('active-month-display');
+
+            // Fade out
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(10px)';
+            displayMonth.style.opacity = '0';
+            displayMonth.style.transform = 'scale(0.8)';
+
+            setTimeout(() => {
+                title.textContent = `${month} Activity Log`;
+                summary.textContent = data.summary;
+                displayMonth.textContent = month.toUpperCase();
+                
+                let html = '';
+                data.events.forEach((event, idx) => {
+                    const borderClass = idx === 0 ? '' : 'border-t border-black/5';
+                    const tagHtml = event.status ? `<span class="px-2 py-0.5 ${event.color}/10 text-${event.color.replace('bg-', '')} text-[10px] font-bold rounded uppercase">${event.status}</span>` : '';
+                    
+                    html += `
+                        <div class="group flex items-start gap-4 p-4 hover:bg-white/40 rounded-lg transition-all cursor-pointer ${borderClass}">
+                            <div class="mt-1 w-2 h-2 rounded-full ${event.color} flex-shrink-0 shadow-[0_0_8px_rgba(0,0,0,0.1)]"></div>
+                            <div class="flex-grow">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-label-md text-label-md font-semibold">${event.title}</h4>
+                                    <span class="font-label-sm text-label-sm text-text-muted">${event.date}</span>
+                                </div>
+                                <p class="font-body-md text-body-md text-text-muted mt-1">${event.desc}</p>
+                                <div class="mt-2 flex items-center gap-2">
+                                    ${tagHtml}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+
+                // Fade in
+                container.style.transition = 'all 0.4s ease';
+                container.style.opacity = '1';
+                container.style.transform = 'translateY(0)';
+                displayMonth.style.opacity = '1';
+                displayMonth.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        document.querySelectorAll('.wheel-segment').forEach(segment => {
+            segment.addEventListener('click', function() {
+                document.querySelectorAll('.wheel-segment').forEach(s => s.classList.remove('wheel-active'));
+                this.classList.add('wheel-active');
+                updateLog(this.getAttribute('data-month'));
+            });
+        });
+    </script>
+</body></html>

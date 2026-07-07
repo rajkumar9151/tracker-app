@@ -8,7 +8,10 @@ const BASE_UPDATE_COLUMNS = ['Update ID', 'Task ID', 'Task Name', 'Week Number',
 export default function AddUpdateModal({ task, updateColumns, metadata, onClose, onSave }) {
   const customColumns = updateColumns ? updateColumns.filter(c => !BASE_UPDATE_COLUMNS.includes(c)) : [];
 
+  const now = new Date();
   const [formData, setFormData] = useState({
+    updateDate: now.toISOString().split('T')[0],
+    weekNumber: `Week ${getISOWeek(now)}`,
     description: '',
     ...customColumns.reduce((acc, col) => ({ ...acc, [col]: '' }), {})
   });
@@ -39,13 +42,10 @@ export default function AddUpdateModal({ task, updateColumns, metadata, onClose,
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const now = new Date();
     onSave({
       updateId: 'UPD-' + Math.floor(Math.random() * 100000).toString().padStart(5, '0'),
       taskId: task['ID'],
       taskName: task['Task Name'],
-      weekNumber: getISOWeek(now),
-      updateDate: now.toISOString(),
       ...formData
     });
   };
@@ -72,11 +72,25 @@ export default function AddUpdateModal({ task, updateColumns, metadata, onClose,
           <div className="form-group" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
             <div>
               <label className="form-label">Update Date</label>
-              <input type="text" disabled value={new Date().toLocaleDateString()} className="form-input" style={{ opacity: 0.7 }} />
+              <input 
+                type="date" 
+                name="updateDate"
+                value={formData.updateDate} 
+                onChange={handleChange}
+                className="form-input" 
+                required
+              />
             </div>
             <div>
               <label className="form-label">Week Number</label>
-              <input type="text" disabled value={`Week ${getISOWeek(new Date())}`} className="form-input" style={{ opacity: 0.7 }} />
+              <input 
+                type="text" 
+                name="weekNumber"
+                value={formData.weekNumber} 
+                onChange={handleChange}
+                className="form-input" 
+                required
+              />
             </div>
           </div>
 
@@ -121,6 +135,21 @@ export default function AddUpdateModal({ task, updateColumns, metadata, onClose,
                       </a>
                     )}
                   </div>
+                </div>
+              );
+            }
+            
+            if (type === 'dropdown') {
+              const options = metadata?.options?.[`Updates_${col}`] || [];
+              return (
+                <div className="form-group" key={col}>
+                  <label className="form-label">{col}</label>
+                  <select name={col} value={formData[col] || ''} onChange={handleChange} className="form-select">
+                    <option value="">-- Select --</option>
+                    {options.map((opt, i) => (
+                      <option key={i} value={opt}>{opt}</option>
+                    ))}
+                  </select>
                 </div>
               );
             }

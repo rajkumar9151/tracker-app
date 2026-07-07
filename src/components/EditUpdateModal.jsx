@@ -139,6 +139,21 @@ export default function EditUpdateModal({ update, updateColumns, metadata, onClo
                 </div>
               );
             }
+            
+            if (type === 'dropdown') {
+              const options = metadata?.options?.[`Updates_${col}`] || [];
+              return (
+                <div className="form-group" key={col}>
+                  <label className="form-label">{col}</label>
+                  <select name={col} value={formData[col] || ''} onChange={handleChange} className="form-select">
+                    <option value="">-- Select --</option>
+                    {options.map((opt, i) => (
+                      <option key={i} value={opt}>{opt}</option>
+                    ))}
+                  </select>
+                </div>
+              );
+            }
 
             return (
               <div className="form-group" key={col}>

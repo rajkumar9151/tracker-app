@@ -1,30 +1,26 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
+import { getDb, saveDb } from '@/lib/localdb';
 
 export async function GET() {
   try {
-    const snapshot = await db.collection('projects').get();
+    const db = await getDb();
     const projects = [];
     
-    for (const doc of snapshot.docs) {
-      const name = doc.id;
-      const tasksSnapshot = await db.collection('projects').doc(name).collection('tasks').get();
+    for (const name of Object.keys(db.projects || {})) {
+      const tasks = db.tasks[name] || [];
       
-      let totalTasks = 0;
-      let completedTasks = 0;
+      let stats = { total: 0, todo: 0, inProgress: 0, done: 0 };
       
-      tasksSnapshot.forEach(taskDoc => {
-        totalTasks++;
-        if (taskDoc.data().Status === 'Closed') {
-          completedTasks++;
-        }
+      tasks.forEach(task => {
+        stats.total++;
+        if (task.Status === 'To Do') stats.todo++;
+        else if (task.Status === 'In Progress') stats.inProgress++;
+        else if (task.Status === 'Done' || task.Status === 'Closed') stats.done++;
       });
       
       projects.push({
         name,
-        totalTasks,
-        completedTasks,
-        progress: totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100)
+        stats
       });
     }
 
@@ -42,14 +38,26 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Project name required' }, { status: 400 });
     }
     
-    await db.collection('projects').doc(projectName).set({
+    const db = await getDb();
+    
+    if (!db.projects) db.projects = {};
+    if (!db.metadata) db.metadata = {};
+    if (!db.tasks) db.tasks = {};
+
+    db.projects[projectName] = {
       name: projectName,
       createdAt: new Date().toISOString()
-    });
+    };
 
-    await db.collection('metadata').doc(projectName).set({
+    db.metadata[projectName] = {
       columns: customColumns || []
-    });
+    };
+
+    if (!db.tasks[projectName]) {
+      db.tasks[projectName] = [];
+    }
+
+    await saveDb(db);
 
     return NextResponse.json({ success: true, projectName });
   } catch (error) {
@@ -67,8 +75,13 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'Project name required' }, { status: 400 });
     }
 
-    await db.collection('projects').doc(projectName).delete();
-    await db.collection('metadata').doc(projectName).delete();
+    const db = await getDb();
+    
+    if (db.projects) delete db.projects[projectName];
+    if (db.metadata) delete db.metadata[projectName];
+    if (db.tasks) delete db.tasks[projectName];
+
+    await saveDb(db);
     
     return NextResponse.json({ success: true });
   } catch (error) {

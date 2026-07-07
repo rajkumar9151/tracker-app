@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
+import { getDb, saveDb } from '@/lib/localdb';
 import { addDays, parseISO, format } from 'date-fns';
 
 export async function POST(request) {
@@ -9,20 +9,23 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Project and taskId required' }, { status: 400 });
     }
 
-    const taskRef = db.collection('projects').doc(project).collection('tasks').doc(taskId);
-    const doc = await taskRef.get();
-    
-    if (!doc.exists) {
+    const db = await getDb();
+    if (!db.tasks || !db.tasks[project]) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
     }
 
-    const task = doc.data();
+    const taskIndex = db.tasks[project].findIndex(t => t.id === taskId || t.ID === taskId);
+    if (taskIndex === -1) {
+      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+    }
+
+    const task = db.tasks[project][taskIndex];
     let currentDate = task['Due Date'] ? parseISO(task['Due Date']) : new Date();
     const newDate = addDays(currentDate, days);
     
-    await taskRef.update({
-      'Due Date': format(newDate, 'yyyy-MM-dd')
-    });
+    task['Due Date'] = format(newDate, 'yyyy-MM-dd');
+    
+    await saveDb(db);
 
     return NextResponse.json({ success: true });
   } catch (error) {
