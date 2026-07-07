@@ -24,6 +24,7 @@ export default function WeeklySummaryModal({ data, onClose, refreshData }) {
   const [promptTemplate, setPromptTemplate] = useState(data.metadata?.aiPromptTemplate || DEFAULT_PROMPT);
   const [isSavingSettings, setIsSavingSettings] = useState(false);
   const [showPromptPreview, setShowPromptPreview] = useState(true);
+  const [passcode, setPasscode] = useState('');
 
   useEffect(() => {
     setWeekNumber(getISOWeek(new Date()).toString());
@@ -209,6 +210,10 @@ export default function WeeklySummaryModal({ data, onClose, refreshData }) {
 
   const handleGenerateAI = async () => {
     if (!weekNumber) return;
+    if (passcode !== '15789') {
+      alert('Incorrect passcode! Hint: Civic');
+      return;
+    }
     setAiGenerating(true);
     setAiSummaryText('');
 
@@ -221,7 +226,7 @@ export default function WeeklySummaryModal({ data, onClose, refreshData }) {
       const res = await fetch('/api/generate-summary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ resolvedPrompt })
+        body: JSON.stringify({ resolvedPrompt, passcode })
       });
       const result = await res.json();
       if (res.ok && result.summary) {
@@ -356,6 +361,18 @@ export default function WeeklySummaryModal({ data, onClose, refreshData }) {
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
+
+        <div className="form-group" style={{ marginBottom: '1rem' }}>
+          <label className="form-label">AI Security Passcode</label>
+          <input 
+            type="password" 
+            value={passcode} 
+            onChange={(e) => setPasscode(e.target.value)} 
+            className="form-input" 
+            placeholder="Enter passcode (Hint: Civic)"
+            style={{ width: '100%' }}
+          />
         </div>
 
         <div className="form-group" style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'center' }}>

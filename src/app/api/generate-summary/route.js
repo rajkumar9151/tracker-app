@@ -3,7 +3,11 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export async function POST(request) {
   try {
-    const { resolvedPrompt } = await request.json();
+    const { resolvedPrompt, passcode } = await request.json();
+
+    if (passcode !== '15789') {
+      return NextResponse.json({ error: 'Incorrect security passcode.' }, { status: 403 });
+    }
 
     let apiKey = '';
     
