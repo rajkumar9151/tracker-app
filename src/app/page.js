@@ -449,6 +449,37 @@ export default function Home() {
     })
   };
 
+  const handleExportExcel = () => {
+    if (!activeProject || !processedData.tasks.length) return;
+    
+    // 1. Determine all columns to export
+    const baseCols = ['ID', 'Task Name', 'Owner', 'Status', 'Priority', 'Created Date', 'Next Update Due'];
+    const customCols = (data.columns || []).filter(c => !baseCols.includes(c));
+    const allCols = [...baseCols, ...customCols];
+
+    // 2. Build CSV header with quotes
+    let csvContent = allCols.map(col => `"${col.replace(/"/g, '""')}"`).join(',') + '\n';
+
+    // 3. Build CSV rows
+    processedData.tasks.forEach(task => {
+      const row = allCols.map(col => {
+        const val = task[col] || '';
+        return `"${String(val).replace(/"/g, '""')}"`;
+      });
+      csvContent += row.join(',') + '\n';
+    });
+
+    // 4. Download file with UTF-8 BOM for Excel compatibility
+    const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `${activeProject}_tasks_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (!isMounted) {
     return null; // Or a subtle loading spinner
   }
@@ -547,6 +578,10 @@ export default function Home() {
           <div className="flex items-center gap-4">
             {activeProject && (
               <div className="flex items-center gap-2 mr-4">
+                <button onClick={handleExportExcel} className="px-4 py-2 border border-border-subtle text-text-main rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-sm">file_download</span>
+                  Export Excel
+                </button>
                 <button onClick={() => setShowTaskModal(true)} className="px-4 py-2 bg-primary-container text-on-primary rounded-lg font-label-md text-label-md flex items-center gap-2 hover:opacity-90 active:opacity-80 transition-colors">
                   <span className="material-symbols-outlined text-sm">add</span>
                   Add New Task
