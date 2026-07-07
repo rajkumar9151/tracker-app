@@ -62,34 +62,46 @@ export default function WeeklySummaryModal({ data, onClose, refreshData }) {
     }
 
     if (weekUpdates.length > 0) {
-      // Group by Task ID
-      const grouped = weekUpdates.reduce((acc, update) => {
+      // Group by Region first, then by Task ID/Name
+      const updatesByRegion = {};
+      weekUpdates.forEach(update => {
+        const task = (data.tasks || []).find(t => t['ID'] === update.taskId);
+        const region = task ? (task['Region'] || task['REGION'] || task['region'] || 'Global') : 'Global';
+        if (!updatesByRegion[region]) {
+          updatesByRegion[region] = {};
+        }
         const key = update.taskId || update.taskName;
-        if (!acc[key]) acc[key] = [];
-        acc[key].push(update);
-        return acc;
-      }, {});
-
-      for (const [key, updates] of Object.entries(grouped)) {
-        const taskName = updates[0].taskName || 'Unknown Task';
-        const taskIdStr = updates[0].taskId ? ` [${updates[0].taskId}]` : '';
-        text += `Task${taskIdStr}: ${taskName}\n`;
-        text += `-----------------\n`;
-      
-      updates.forEach((update, idx) => {
-        if (updates.length > 1) text += `Update ${idx + 1}:\n`;
-        text += `- Description: ${update.description}\n`;
-        
-        customColumns.forEach(col => {
-          if (update[col]) {
-            text += `- ${col}: ${update[col]}\n`;
-          }
-        });
-        
-        if (idx < updates.length - 1) text += '\n';
+        if (!updatesByRegion[region][key]) {
+          updatesByRegion[region][key] = [];
+        }
+        updatesByRegion[region][key].push(update);
       });
-      
-      text += `\n`;
+
+      for (const [region, tasks] of Object.entries(updatesByRegion)) {
+        text += `Region: ${region}\n`;
+        text += `====================\n`;
+        
+        for (const [key, updates] of Object.entries(tasks)) {
+          const taskName = updates[0].taskName || 'Unknown Task';
+          const taskIdStr = updates[0].taskId ? ` [${updates[0].taskId}]` : '';
+          text += `Task${taskIdStr}: ${taskName}\n`;
+          text += `-----------------\n`;
+          
+          updates.forEach((update, idx) => {
+            if (updates.length > 1) text += `Update ${idx + 1}:\n`;
+            text += `- Description: ${update.description}\n`;
+            
+            customColumns.forEach(col => {
+              if (update[col]) {
+                text += `- ${col}: ${update[col]}\n`;
+              }
+            });
+            
+            if (idx < updates.length - 1) text += '\n';
+          });
+          text += `\n`;
+        }
+        text += `\n`;
       }
     }
 
@@ -119,25 +131,39 @@ export default function WeeklySummaryModal({ data, onClose, refreshData }) {
 
     let taskUpdatesText = '';
     if (taskUpdates.length > 0) {
-      const grouped = taskUpdates.reduce((acc, u) => {
+      // Group by Region first, then by Task ID/Name
+      const updatesByRegion = {};
+      taskUpdates.forEach(u => {
+        const task = (data.tasks || []).find(t => t['ID'] === u.taskId);
+        const region = task ? (task['Region'] || task['REGION'] || task['region'] || 'Global') : 'Global';
+        if (!updatesByRegion[region]) {
+          updatesByRegion[region] = {};
+        }
         const key = u.taskId || u.taskName;
-        if (!acc[key]) acc[key] = [];
-        acc[key].push(u);
-        return acc;
-      }, {});
-      
-      for (const [key, updates] of Object.entries(grouped)) {
-        const taskName = updates[0].taskName || 'Unknown Task';
-        const taskIdStr = updates[0].taskId ? ` [${updates[0].taskId}]` : '';
-        taskUpdatesText += `Task${taskIdStr}: ${taskName}\n`;
-        updates.forEach(u => {
-          taskUpdatesText += `  - ${u.description}\n`;
-          customColumns.forEach(col => {
-            if (u[col]) {
-              taskUpdatesText += `    * ${col}: ${u[col]}\n`;
-            }
+        if (!updatesByRegion[region][key]) {
+          updatesByRegion[region][key] = [];
+        }
+        updatesByRegion[region][key].push(u);
+      });
+
+      // Format updates by region
+      for (const [region, tasks] of Object.entries(updatesByRegion)) {
+        taskUpdatesText += `Region: ${region}\n`;
+        taskUpdatesText += `====================\n`;
+        for (const [key, updates] of Object.entries(tasks)) {
+          const taskName = updates[0].taskName || 'Unknown Task';
+          const taskIdStr = updates[0].taskId ? ` [${updates[0].taskId}]` : '';
+          taskUpdatesText += `  Task${taskIdStr}: ${taskName}\n`;
+          updates.forEach(u => {
+            taskUpdatesText += `    - ${u.description}\n`;
+            customColumns.forEach(col => {
+              if (u[col]) {
+                taskUpdatesText += `      * ${col}: ${u[col]}\n`;
+              }
+            });
           });
-        });
+        }
+        taskUpdatesText += `\n`;
       }
     }
 
