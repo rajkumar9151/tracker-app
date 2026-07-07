@@ -450,34 +450,74 @@ export default function Home() {
   };
 
   const handleExportExcel = () => {
-    if (!activeProject || !processedData.tasks.length) return;
-    
-    // 1. Determine all columns to export
-    const baseCols = ['ID', 'Task Name', 'Owner', 'Status', 'Priority', 'Created Date', 'Next Update Due'];
-    const customCols = (data.columns || []).filter(c => !baseCols.includes(c));
-    const allCols = [...baseCols, ...customCols];
+    if (!activeProject) return;
+    const dateStr = new Date().toISOString().split('T')[0];
 
-    // 2. Build CSV header with quotes
-    let csvContent = allCols.map(col => `"${col.replace(/"/g, '""')}"`).join(',') + '\n';
+    // --- 1. Export ALL Tasks (Active and Closed) ---
+    if (data.tasks && data.tasks.length > 0) {
+      const baseCols = ['ID', 'Task Name', 'Owner', 'Status', 'Priority', 'Created Date', 'Next Update Due'];
+      const customCols = (data.columns || []).filter(c => !baseCols.includes(c));
+      const allCols = [...baseCols, ...customCols];
 
-    // 3. Build CSV rows
-    processedData.tasks.forEach(task => {
-      const row = allCols.map(col => {
-        const val = task[col] || '';
-        return `"${String(val).replace(/"/g, '""')}"`;
+      let csvTasks = allCols.map(col => `"${col.replace(/"/g, '""')}"`).join(',') + '\n';
+
+      data.tasks.forEach(task => {
+        const row = allCols.map(col => {
+          const val = task[col] || '';
+          return `"${String(val).replace(/"/g, '""')}"`;
+        });
+        csvTasks += row.join(',') + '\n';
       });
-      csvContent += row.join(',') + '\n';
-    });
 
-    // 4. Download file with UTF-8 BOM for Excel compatibility
-    const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `${activeProject}_tasks_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      const blobTasks = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvTasks], { type: 'text/csv;charset=utf-8;' });
+      const urlTasks = URL.createObjectURL(blobTasks);
+      const linkTasks = document.createElement('a');
+      linkTasks.href = urlTasks;
+      linkTasks.setAttribute('download', `${activeProject}_all_tasks_${dateStr}.csv`);
+      document.body.appendChild(linkTasks);
+      linkTasks.click();
+      document.body.removeChild(linkTasks);
+    }
+
+    // --- 2. Export ALL General Updates ---
+    if (data.projectUpdates && data.projectUpdates.length > 0) {
+      const colMap = {
+        'Update ID': 'updateId',
+        'Update Date': 'updateDate',
+        'Week Number': 'weekNumber',
+        'Status': 'status',
+        'Description': 'description',
+        'Attachment': 'attachment'
+      };
+
+      const baseUpdateCols = ['Update ID', 'Update Date', 'Week Number', 'Status', 'Description', 'Attachment'];
+      const customUpdateCols = (data.updateColumns || []).filter(c => !baseUpdateCols.includes(c));
+      const allUpdateCols = [...baseUpdateCols, ...customUpdateCols];
+
+      let csvUpdates = allUpdateCols.map(col => `"${col.replace(/"/g, '""')}"`).join(',') + '\n';
+
+      data.projectUpdates.forEach(update => {
+        const row = allUpdateCols.map(col => {
+          const key = colMap[col] || col;
+          const val = update[key] || '';
+          return `"${String(val).replace(/"/g, '""')}"`;
+        });
+        csvUpdates += row.join(',') + '\n';
+      });
+
+      const blobUpdates = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvUpdates], { type: 'text/csv;charset=utf-8;' });
+      const urlUpdates = URL.createObjectURL(blobUpdates);
+      const linkUpdates = document.createElement('a');
+      linkUpdates.href = urlUpdates;
+      linkUpdates.setAttribute('download', `${activeProject}_general_updates_${dateStr}.csv`);
+      
+      // Delay slightly to prevent the browser from blocking multiple files download
+      setTimeout(() => {
+        document.body.appendChild(linkUpdates);
+        linkUpdates.click();
+        document.body.removeChild(linkUpdates);
+      }, 300);
+    }
   };
 
   if (!isMounted) {
