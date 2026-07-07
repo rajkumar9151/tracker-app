@@ -33,6 +33,6 @@ This project runs on a Google Cloud Platform `e2-micro` (1 GB RAM) instance. To 
 - **Compatibility:** Backward compatibility is maintained for old Base64 attachments (checking for the `data` field in database objects vs. the new streaming URLs).
 
 ## 4. App Security & Passcode
-- **AI Summary Passcode:** Gemini summary requests require the passcode `15789` (hint: `Civic`). This is checked in the UI and enforced at the server route `/api/generate-summary/route.js`.
+- **AI Summary Passcode:** Gemini summary requests require the passcode configured in your private environment variable `AI_SUMMARY_PASSCODE` (hint: `Civic`). This is checked securely at the server route `/api/generate-summary/route.js` by matching the user's input against the server's `.env.local` configuration.
 - **Idle Timeout:** The main tracker logs users out after **1 hour** of complete inactivity.
 

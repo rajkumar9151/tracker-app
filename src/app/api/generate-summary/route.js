@@ -5,11 +5,8 @@ export async function POST(request) {
   try {
     const { resolvedPrompt, passcode } = await request.json();
 
-    if (passcode !== '15789') {
-      return NextResponse.json({ error: 'Incorrect security passcode.' }, { status: 403 });
-    }
-
     let apiKey = '';
+    let expectedPasscode = process.env.AI_SUMMARY_PASSCODE || '15789';
     
     // Force read directly from .env.local to completely bypass Next.js and system caching issues
     try {
@@ -18,9 +15,15 @@ export async function POST(request) {
       const envPath = path.join(process.cwd(), '.env.local');
       if (fs.existsSync(envPath)) {
         const envContent = fs.readFileSync(envPath, 'utf8');
+        
         const match = envContent.match(/GEMINI_API_KEY=([^\r\n]+)/);
         if (match && match[1]) {
           apiKey = match[1].trim();
+        }
+        
+        const passcodeMatch = envContent.match(/AI_SUMMARY_PASSCODE=([^\r\n]+)/);
+        if (passcodeMatch && passcodeMatch[1]) {
+          expectedPasscode = passcodeMatch[1].trim();
         }
       }
     } catch (e) {
@@ -30,6 +33,10 @@ export async function POST(request) {
     // Ultimate fallback if file reading fails
     if (!apiKey || apiKey === 'your_api_key_here') {
        apiKey = process.env.GEMINI_API_KEY;
+    }
+    
+    if (passcode !== expectedPasscode) {
+      return NextResponse.json({ error: 'Incorrect security passcode.' }, { status: 403 });
     }
     
     console.log("SERVER API KEY:", apiKey ? apiKey.substring(0, 10) + "..." : "undefined");

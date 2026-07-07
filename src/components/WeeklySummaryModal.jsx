@@ -210,8 +210,8 @@ export default function WeeklySummaryModal({ data, onClose, refreshData }) {
 
   const handleGenerateAI = async () => {
     if (!weekNumber) return;
-    if (passcode !== '15789') {
-      alert('Incorrect passcode! Hint: Civic');
+    if (!passcode) {
+      alert('Please enter the security passcode. Hint: Civic');
       return;
     }
     setAiGenerating(true);
