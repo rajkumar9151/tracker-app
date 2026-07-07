@@ -1,48 +1,29 @@
 import { NextResponse } from 'next/server';
-import { getDb, saveDb } from '@/lib/localdb';
+import { uploadFile } from '@/lib/gcs';
 
 export async function POST(request) {
   try {
     const formData = await request.formData();
     const file = formData.get('file');
-    const project = formData.get('project');
-    const taskId = formData.get('taskId');
 
-    if (!file || !project || !taskId) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    if (!file) {
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    const buffer = await file.arrayBuffer();
-    const base64 = Buffer.from(buffer).toString('base64');
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
     
-    const attachment = {
-      name: file.name,
-      type: file.type,
-      size: file.size,
-      data: `data:${file.type};base64,${base64}`,
-      uploadedAt: new Date().toISOString()
-    };
-
-    const db = await getDb();
-    if (!db.tasks || !db.tasks[project]) {
-      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
-    }
-
-    const taskIndex = db.tasks[project].findIndex(t => t.id === taskId || t.ID === taskId);
-    if (taskIndex === -1) {
-      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
-    }
-
-    const task = db.tasks[project][taskIndex];
-    if (!task.attachments) task.attachments = [];
+    // Generate a unique filename using a timestamp prefix to prevent collisions
+    const uniqueFilename = `${Date.now()}-${file.name}`;
     
-    task.attachments.push(attachment);
-
-    await saveDb(db);
-
-    return NextResponse.json({ success: true, attachment: { name: file.name, type: file.type, size: file.size } });
+    const uploadResult = await uploadFile(buffer, uniqueFilename, file.type);
+    
+    return NextResponse.json({ 
+      success: true, 
+      url: uploadResult.url 
+    });
   } catch (error) {
-    console.error('Upload error:', error);
+    console.error('Upload API error:', error);
     return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
   }
 }
